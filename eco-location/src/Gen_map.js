@@ -94,6 +94,7 @@ class KakaoMap extends React.Component {
         const options = {
             center: new window.kakao.maps.LatLng(35.8, 128),  // lat은 세로 lng은 가로 
             level: 13,
+            disableDoubleClickZoom: true,
         };
         const map = new window.kakao.maps.Map(container, options);
         // map.setMapTypeId(window.kakao.maps.MapTypeId.SKYVIEW);
