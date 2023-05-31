@@ -182,7 +182,7 @@ class KakaoMap extends React.Component {
         return(
         <div className="mapContainer">
             <div id="map"></div>
-            <div className="customInfo">aaa</div>
+            <div className="customInfo"></div>
         </div>
         );
     }

@@ -129,6 +129,26 @@ class Exist_Gen extends React.Component {
         this.drawMap();
       });
     };
+    
+    // 네비게이션바 현재위치 색넣기 (단순무식하게 구현)
+    const nav = document.getElementsByClassName("item");
+    for(var i=0; i<nav.length; i++) {
+        nav[i].addEventListener("mouseenter", function () {
+            this.style.background = "linear-gradient(to bottom, lightgray, white)";
+        });
+
+        if(i===3) {
+            nav[i].style.backgroundColor = "#DDD";
+            nav[i].addEventListener("mouseleave", function () {
+                this.style.background = "#DDD";
+            });
+        } else {
+            nav[i].style.backgroundColor = "#FFF";
+            nav[i].addEventListener("mouseleave", function () {
+                this.style.background = "#FFF";
+            });
+        }
+    }
   }
 
   

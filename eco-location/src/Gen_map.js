@@ -74,11 +74,11 @@ function polygon(map, boundary, bgData, data, event) { // 1회당 도/광역시 
         polygons.forEach((polygon) => { polygon.setOptions({fillColor: backgroundColor}) });
         customInfo.style.display = 'none';
     });
-      
     content.addEventListener('mousemove', (event) => {
         customInfo.style.left = event.clientX - 125 + 'px';
         customInfo.style.top = event.clientY - 157 + 'px';
     });
+    content.addEventListener('click', () => clickHandler());
 
 
     // 폴리곤 생성 (구역당 여러개일 수 있음)

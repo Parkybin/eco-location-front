@@ -158,7 +158,7 @@ class KakaoMap extends React.Component {
 
     componentDidUpdate() {
         // 스크립트 로드 완료 여부 확인
-        if (typeof window.kakao !== "undefined" && typeof window.kakao.maps !== "undefined") {
+        if (typeof window.kakao !== "undefined" && typeof window.kakao.maps !== "undefined" && typeof window.kakao.maps.LatLng !== "undefined") {
             // 지도 그리기
             this.map();
         }
@@ -175,7 +175,9 @@ class KakaoMap extends React.Component {
         // 지도 그리기
         script.onload = () => { 
             window.kakao.maps.load(() => {
-                this.map()
+                if (typeof window.kakao !== "undefined" && typeof window.kakao.maps !== "undefined" && typeof window.kakao.maps.LatLng !== "undefined") {
+                    this.map();
+                }
             })
         };
     }
@@ -184,7 +186,7 @@ class KakaoMap extends React.Component {
         return(
         <div className="mapContainer">
             <div id="map"></div>
-            <div className="customInfo">aaa</div>
+            <div className="customInfo"></div>
         </div>
         );
     }

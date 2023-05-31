@@ -188,15 +188,35 @@ class TotalPotential extends React.Component { // 지역별 잠재량 페이지
     componentDidMount() {
         // 실제 사용
         const year = new Date().getFullYear() -1;
-        call("/energy-potential/source?year="+year, "GET", null).then((response) =>
+        call("/es/energy-potential/source?year="+year, "GET", null).then((response) =>
             this.setState({by:"total", totalData:response}, () => {
                 this.calcBackgroundColor(response); 
             })
         );
             
-        call("/energy-potential/source-type?year="+year, "GET", null).then((response) =>
+        call("/es/energy-potential/source-type?year="+year, "GET", null).then((response) =>
             this.setState({sourceData:response})
         );
+
+        // 네비게이션바 현재위치 색넣기 (단순무식하게 구현)
+        const nav = document.getElementsByClassName("item");
+        for(var i=0; i<nav.length; i++) {
+            nav[i].addEventListener("mouseenter", function () {
+                this.style.background = "linear-gradient(to bottom, lightgray, white)";
+            });
+
+            if(i===2) {
+                nav[i].style.backgroundColor = "#DDD";
+                nav[i].addEventListener("mouseleave", function () {
+                    this.style.background = "#DDD";
+                });
+            } else {
+                nav[i].style.backgroundColor = "#FFF";
+                nav[i].addEventListener("mouseleave", function () {
+                    this.style.background = "#FFF";
+                });
+            }
+        }
     }
     
     render() {

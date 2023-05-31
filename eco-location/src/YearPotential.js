@@ -135,7 +135,27 @@ class YearPotential extends React.Component { // 시간별 잠재량 페이지
             { "areaName": "전라북도", "태양에너지":0, "풍력에너지":0 },
             { "areaName": "경기도", "태양에너지":0, "풍력에너지":0 }
         ];
-        this.setState({startYear: "2022", startMonth: "08", endYear: "2022", endMonth: "12", items:emptyData, today:formattedDate, loading:false}, this.drawGraph);
+        this.setState({startYear: "2022", startMonth: "05", endYear: "2022", endMonth: "09", items:emptyData, today:formattedDate, loading:false}, this.drawGraph);
+
+        // 네비게이션바 현재위치 색넣기 (단순무식하게 구현)
+        const nav = document.getElementsByClassName("item");
+        for(var i=0; i<nav.length; i++) {
+            nav[i].addEventListener("mouseenter", function () {
+                this.style.background = "linear-gradient(to bottom, lightgray, white)";
+            });
+
+            if(i===2) {
+                nav[i].style.backgroundColor = "#DDD";
+                nav[i].addEventListener("mouseleave", function () {
+                    this.style.background = "#DDD";
+                });
+            } else {
+                nav[i].style.backgroundColor = "#FFF";
+                nav[i].addEventListener("mouseleave", function () {
+                    this.style.background = "#FFF";
+                });
+            }
+        }
     }
     
     render() {
@@ -151,7 +171,7 @@ class YearPotential extends React.Component { // 시간별 잠재량 페이지
                             <option value="2021">2021년</option>
                             <option value="2022">2022년</option>
                         </select>
-                        <select id="startMonth" name="startMonth" defaultValue={"08"} onChange={this.handleChange}>
+                        <select id="startMonth" name="startMonth" defaultValue={"05"} onChange={this.handleChange}>
                             <option value="01">1월</option>
                             <option value="02">2월</option>
                             <option value="03">3월</option>
@@ -173,7 +193,7 @@ class YearPotential extends React.Component { // 시간별 잠재량 페이지
                             <option value="2021">2021년</option>
                             <option value="2022">2022년</option>
                         </select>
-                        <select id="endMonth" name="endMonth" defaultValue={"12"} onChange={this.handleChange}>
+                        <select id="endMonth" name="endMonth" defaultValue={"09"} onChange={this.handleChange}>
                             <option value="01">1월</option>
                             <option value="02">2월</option>
                             <option value="03">3월</option>

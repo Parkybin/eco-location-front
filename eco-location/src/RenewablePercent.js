@@ -27,7 +27,7 @@ class MyResponsiveBar extends React.Component { // 지역의 데이터 막대 �
                 padding={0.3}
                 valueScale={{ type: 'linear' }}
                 indexScale={{ type: 'band', round: true }}
-                colors={{ scheme: 'pastel1' }}
+                colors={{ scheme: 'paired' }}
                 borderColor={{
                     from: 'color',
                     modifiers: [
@@ -181,7 +181,7 @@ class RenewablePercent extends React.Component { // 지역별 생산비율 페�
 
         var newItems = [];
         for(let i=year; i>=2018; i--) {
-            call("/areageneratorsource?start="+i+"-01-01&end="+i+"-12-31", "GET", null).then((response) => {
+            call("/es/areageneratorsource?start="+i+"-01-01&end="+i+"-12-31", "GET", null).then((response) => {
                 newItems.push({year:i, data:response});
                 if(newItems.length===(year-2017)) {
                     this.setState({year:year, items:newItems, loading:false}, () => {
@@ -198,6 +198,25 @@ class RenewablePercent extends React.Component { // 지역별 생산비율 페�
             });
         }
 
+        // 네비게이션바 현재위치 색넣기 (단순무식하게 구현)
+        const nav = document.getElementsByClassName("item");
+        for(var i=0; i<nav.length; i++) {
+            nav[i].addEventListener("mouseenter", function () {
+                this.style.background = "linear-gradient(to bottom, lightgray, white)";
+            });
+
+            if(i===0) {
+                nav[i].style.backgroundColor = "#DDD";
+                nav[i].addEventListener("mouseleave", function () {
+                    this.style.background = "#DDD";
+                });
+            } else {
+                nav[i].style.backgroundColor = "#FFF";
+                nav[i].addEventListener("mouseleave", function () {
+                    this.style.background = "#FFF";
+                });
+            }
+        }
     }
     
     render() {
