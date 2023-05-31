@@ -8,7 +8,10 @@ class Header extends React.Component {
             <div className="headerContainer">
                 <div className="nav">
                     <div className="item">
-                        <Link to="/gen-total">과거 재생에너지 발전량</Link>
+                        <Link to="/renewable-percent">재생에너지 전환율</Link>
+                    </div>
+                    <div className="item">
+                        <Link to="/gen-total">재생에너지 발전량</Link>
                     </div>
                     <div className="item">
                         <Link to="/potential-total">재생에너지 잠재량 확인</Link>
@@ -19,9 +22,6 @@ class Header extends React.Component {
                     </div>
                     <div className="item">
                         <Link to="/exist-gen">기존 발전소 확인</Link>
-                    </div>
-                    <div className="item">
-                        <Link to="/renewable-percent">재생에너지 전환율</Link>
                     </div>
                 </div>
             </div>

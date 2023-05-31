@@ -1,4 +1,4 @@
-import {API_BASE_URL} from "../app-config";
+import {API_BASE_URL, API_BASE_URL_NOT_ES} from "../app-config";
 
 export function call(api, method, request){
     let headers = new Headers({
@@ -8,6 +8,40 @@ export function call(api, method, request){
     let options = {
         headers: headers,
         url:API_BASE_URL + api,
+        method: method,
+    };
+    if(request){
+        options.body = JSON.stringify(request);
+    }
+    return fetch(options.url, options)
+        .then((response) => 
+            response.json().then((json) => {
+                if(!response.ok){
+                    return Promise.reject(json);
+                }
+                return json;
+            })
+    )
+    .catch((error) => {
+        console.log("loginerror");
+        console.log(error.status);
+        console.log("Oops!");
+        if(error.status == 403){
+            window.location.href = "/login";
+        }
+        return Promise.reject(error);
+    });
+}
+
+
+export function call_for_not_es(api, method, request){
+    let headers = new Headers({
+        "Content-Type": "application/json",
+    });
+
+    let options = {
+        headers: headers,
+        url:API_BASE_URL_NOT_ES + api,
         method: method,
     };
     if(request){
@@ -112,7 +146,7 @@ export function Potential_All(){
 // 해당 연도의 지역별 잠재량 총합(태양 + 풍력) 리스트 가져오기
 // 연도만 사용하여 검색(ex: 2022)
 export function Potential_Year_Sum(Year){
-    return call("/energy-potential/source?year=" + Year, "GET", null)
+    return call_for_not_es("/energy-potential/source?year=" + Year, "GET", null)
         .then((response) => {
             if(response) {
                 return response;

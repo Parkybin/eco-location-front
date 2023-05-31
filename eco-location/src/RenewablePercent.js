@@ -146,7 +146,7 @@ class RenewablePercent extends React.Component { // 지역별 생산비율 페�
         const select = document.querySelector(".totalInfo");
         this.state.items.find((i) => i.year==this.state.year).data.forEach((item) => {
             if(item.areaName==="소계") {
-                select.innerHTML = "<div class='title'>"+this.state.year+"년 생산 비율 평균</div>"+
+                select.innerHTML = "<div class='title'>"+this.state.year+"년 국내 생산 비율 평균</div>"+
                                 "<div class='info'>"+Math.round(item.renewableEnergyPercent*10000)/100+"%</div>";
                 return;
             }

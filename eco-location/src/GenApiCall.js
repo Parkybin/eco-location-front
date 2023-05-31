@@ -1,4 +1,4 @@
-import {API_BASE_URL} from "./app-config.js";
+import {API_BASE_URL_NOT_ES} from "./app-config.js";
 
 
 export function call(api, method, request){
@@ -8,7 +8,7 @@ export function call(api, method, request){
 
     let options = {
         headers: headers,
-        url:API_BASE_URL + api,
+        url:API_BASE_URL_NOT_ES + api,
         method: method,
     };
     if(request){

@@ -213,27 +213,27 @@ class TotalPotential extends React.Component { // 지역별 잠재량 페이지
         }
 
         var totalPotentialPage = (
-        <div className='pageContainer'>
-            {map}
-            <div className='sideController'>
-                <div className='legendContainer'></div>
-                <div className='checkboxContainer'>
-                    <label style={{color:"red"}}>
-                        <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />태양에너지
-                    </label>
-                    <label style={{color:"blue"}}>
-                        <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />풍력에너지
-                    </label>
+            <div className='pageContainer'>
+                {map}
+                <div className='sideController'>
+                    <div className='legendContainer'></div>
+                    <div className='checkboxContainer'>
+                        <label style={{color:"red"}}>
+                            <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />태양에너지
+                        </label>
+                        <label style={{color:"blue"}}>
+                            <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />풍력에너지
+                        </label>
+                    </div>
+                </div>
+                <div className='sideArea'>
+                    <div className='title'></div>
+                    <div className="pieContainer">
+                        {pie}
+                    </div>
+                    <div className='info'></div>
                 </div>
             </div>
-            <div className='sideArea'>
-                <div className='title'></div>
-                <div className="pieContainer">
-                    {pie}
-                </div>
-                <div className='info'></div>
-            </div>
-        </div>
         );
 
         var loadingPage = <h1>...</h1>

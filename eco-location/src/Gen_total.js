@@ -8,6 +8,96 @@ import Select from 'react-select';
 import { ResponsiveBar } from '@nivo/bar';
 import Gen_year from './Gen_year';
 
+class MyResponsiveBar extends React.Component { // 지역의 데이터 막대 그래프
+    render() {
+        var newData = [];
+        this.props.data.forEach((yearData) => {
+            newData.push({
+                "year": yearData.year,
+                "생산 비율": Math.round(yearData.data.find((i) => i.areaName==this.props.selectedArea).renewableEnergyPercent*10000)/100
+            });
+        });
+        newData.sort((a, b) => a.year - b.year);
+        
+        return(
+            <ResponsiveBar
+                data={newData}
+                keys={[ // 표에 나타낼 값
+                    "생산 비율"
+                ]}
+                indexBy="year"  // 가로축
+                groupMode="stacked"
+                margin={{ top: 30, right: 20, bottom: 60, left: 50 }}
+                padding={0.3}
+                valueScale={{ type: 'linear' }}
+                indexScale={{ type: 'band', round: true }}
+                colors={{ scheme: 'pastel1' }}
+                borderColor={{
+                    from: 'color',
+                    modifiers: [
+                        [
+                            'darker',
+                            1.6
+                        ]
+                    ]
+                }}
+                axisTop={null}
+                axisRight={null}
+                axisBottom={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                }}
+                axisLeft={{
+                    tickSize: 5,
+                    tickPadding: 5,
+                    tickRotation: 0,
+                    legend: '생산 비율(%)',
+                    legendPosition: 'middle',
+                    legendOffset: -40
+                }}
+                labelSkipWidth={10}
+                labelSkipHeight={10}
+                labelTextColor={{
+                    from: 'color',
+                    modifiers: [
+                        [
+                            'darker',
+                            3
+                        ]
+                    ]
+                }}
+                legends={[  // 범례
+                    {
+                        dataFrom: 'keys',
+                        anchor: 'bottom',
+                        direction: 'row',
+                        justify: false,
+                        translateX: 30,
+                        translateY: 60,
+                        itemsSpacing: 2,
+                        itemWidth: 160,
+                        itemHeight: 20,
+                        itemDirection: 'left-to-right',
+                        itemOpacity: 0.85,
+                        symbolSize: 20,
+                        effects: [
+                            {
+                                on: 'hover',
+                                style: {
+                                    itemOpacity: 1
+                                }
+                            }
+                        ]
+                    }
+                ]}
+                role="application"
+                ariaLabel="Nivo bar chart demo"
+                barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
+            />
+        );
+    }
+}
 
 class Gen_total extends React.Component { // 지역별 발전량 페이지
     constructor(props) {  
@@ -22,10 +112,10 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
             extractedYearData:[],
             responseJson: null,
             error: null,
-            year: "2020",
+            year: "2022",
             arr: [],
             selectedOption:null,
-            selected_year:'2020',
+            selected_year:'2022',
             sel_year:'',
             allyeardata:[],
             MakeBar:null
@@ -113,7 +203,7 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
         }
   };
 
-  handle_GenApi_Search = (e) => {//첫 실행시 데이터 불러오기(디폴트 year=2020). handleChange랑 합치는법 몰라
+  handle_GenApi_Search = (e) => {//첫 실행시 데이터 불러오기(디폴트 year=2022). 
 
     const { year } = this.state;
     console.log('year',year);
@@ -245,6 +335,8 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
     drawLegend = () => {//그리기
         var legendContainer = document.querySelector(".legendContainer");
         legendContainer.innerHTML = "";
+        if(this.state.by==="null") return;
+        
         for(var i=0; i<10; i++) {
             var backgroundColor = this.state.bgData.bg0+(15-i).toString(16)+this.state.bgData.bg1;
             var range = document.createElement("div");
@@ -275,9 +367,7 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
         } else if(!checkboxs[0].checked && checkboxs[1].checked) {
             this.setState({by:"source2"}, () => {this.calcBackgroundColor(this.state.sourceData)});
         } else if(!checkboxs[0].checked && !checkboxs[1].checked) { // 둘다 미체크
-            checkboxs[0].checked = true;
-            checkboxs[1].checked = true;
-            this.setState({by:"total"}, () => {this.calcBackgroundColor(this.state.totalData)});
+            this.setState({by:"null"}, () => {this.calcBackgroundColor(this.state.sourceData);});
         }
     }
 
@@ -296,59 +386,59 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
         var data=this.allyeardata;
         console.log('data',data[0]);
         
-        side.innerHTML = 
+        // side.innerHTML = 
         // "<div class='title'>"+this.allyeardata+" 발전량 총합</div>"+
-        "<div class='info'>"+areaName+"  "+data[8].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[8].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[8].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[9].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[9].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[9].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[10].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[10].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[10].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[11].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[11].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[11].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[0].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[0].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[0].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[1].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[1].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[1].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[2].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[2].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[2].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[3].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[3].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[3].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[4].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[4].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[4].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[5].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[5].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[5].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[6].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[6].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[6].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        "<div class='info'>"+data[7].year+'년'+"</div>"+
-        "<div class='info'>"+'태양에너지:'+data[7].generateSolarAmountAverage+"</div>"+
-        "<div class='info'>"+'풍력에너지:'+data[7].generateWindAmountAverage+"</div>"+
-        "<div class='info'>"+" "+"</div>"+
-        
+        // "<div class='info'>"+areaName+"  "+data[8].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[8].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[8].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[9].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[9].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[9].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[10].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[10].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[10].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[11].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[11].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[11].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[0].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[0].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[0].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[1].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[1].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[1].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[2].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[2].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[2].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[3].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[3].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[3].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[4].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[4].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[4].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[5].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[5].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[5].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[6].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[6].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[6].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
+        // "<div class='info'>"+data[7].year+'년'+"</div>"+
+        // "<div class='info'>"+'태양에너지:'+data[7].generateSolarAmountAverage+"</div>"+
+        // "<div class='info'>"+'풍력에너지:'+data[7].generateWindAmountAverage+"</div>"+
+        // "<div class='info'>"+" "+"</div>"+
         
         console.log(areaName);
+
       }
     
     componentDidMount() {
@@ -369,8 +459,6 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
     render() {
         const { year, error, responseJson, extractedData, arr,value,allyeardata,MakeBar } = this.state;
         const {selectedOption}= this.state;
-        
-
 
         var map;
         if(this.state.totalData&&this.state.by=="total") {
@@ -381,35 +469,44 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
             map = <div className='mapContainer'></div>
         }
 
-        var totalPotentialPage = (
-        <div className='pageContainer'>
-            {map}
-            <div className='sideController'>
-              <p >연간 과거 발전량 데이터</p>
-                <div className='legendContainer'></div>
-                <div style={{ border: "1px solid #ccc", padding: "10px", margin: "10px" }}>
-              <div>연도 선택</div>
-                <Select
-                className='Select'
-                value={selectedOption}
-                onChange={this.handleChange}
-                options={sel_year}
-                placeholder='2020'
-                />        
+        // var bar;
+        // if(this.state.selectedArea) {
+        //     bar = this.state.items.length>0&&(<MyResponsiveBar selectedArea={this.state.selectedArea} data={this.state.items} />);
+        // } else {
+        //     bar = <div className='bar'></div>;
+        // }
+
+        var totalGeneratePage = (
+            <div className='pageContainer'>
+                {map}
+                <div className='sideController'>
+                    {/* <p style={{ border: "2px solid orange", backgroundColor: 'wheat' }}>연간 과거 발전량 데이터</p> */}
+                    <div className='legendContainer'></div>
+                    <div style={{ border: "2px solid orange", backgroundColor: 'wheat' }}>
+                        <div style={{ border: "1px solid #ccc", padding: "10px", margin: "10px", backgroundColor:"white" }}>
+                            <div>연도 선택</div>
+                            <Select
+                            className='Select'
+                            value={selectedOption}
+                            onChange={this.handleChange}
+                            options={sel_year}
+                            placeholder='2022'
+                            />        
+                        </div>
+                    </div>
+                    <div className='checkboxContainer'>
+                        <label style={{color:"red"}}>
+                            <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />태양에너지
+                        </label>
+                        <label style={{color:"blue"}}>
+                            <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />풍력에너지
+                        </label>
+                        {this.MakeBar}
+                    </div>
                 </div>
-                <div className='checkboxContainer'>
-                    <label style={{color:"red"}}>
-                        <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />태양에너지
-                    </label>
-                    <label style={{color:"blue"}}>
-                        <input className='checkbox' type="checkbox" onChange={this.checkHandler} defaultChecked="true" />풍력에너지
-                    </label>
-              {this.MakeBar}
+                <div className='side'>
                 </div>
-        </div>
-            <div className='side'>
             </div>
-        </div>
         );
 
         var loadingPage = <h1>...</h1>
@@ -417,13 +514,12 @@ class Gen_total extends React.Component { // 지역별 발전량 페이지
 
         if(!this.state.loading) {
             console.log("loading end");
-            content = totalPotentialPage;
+            content = totalGeneratePage;
         }
 
         return(
             <div className='container'>
                 {content}
-                
             </div>
         );
     }

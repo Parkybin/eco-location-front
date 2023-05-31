@@ -202,7 +202,7 @@ class Exist_Gen extends React.Component {
             {pagedData.map((item, index) => (
               <tr key={index}>
                 <td>{item.generatorName}</td>
-                <td>{item.generateAmount} kW</td>
+                <td>{item.generateAmount} MW</td>
                 <td>{item.powerSource}</td>
               </tr>
             ))}
